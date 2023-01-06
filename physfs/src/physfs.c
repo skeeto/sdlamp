@@ -73,7 +73,7 @@ typedef struct __PHYSFS_ERRSTATETYPE__
 
 
 /* General PhysicsFS state ... */
-static int initialized = 0;
+static int physfs_initialized = 0;
 static ErrState *errorStates = NULL;
 static DirHandle *searchPath = NULL;
 static DirHandle *writeDir = NULL;
@@ -663,7 +663,7 @@ void __PHYSFS_sort(void *entries, size_t max,
 } /* __PHYSFS_sort */
 
 
-static ErrState *findErrorForCurrentThread(void)
+static ErrState *pfindErrorForCurrentThread(void)
 {
     ErrState *i;
     void *tid;
@@ -690,20 +690,20 @@ static ErrState *findErrorForCurrentThread(void)
         __PHYSFS_platformReleaseMutex(errorLock);
 
     return NULL;   /* no error available. */
-} /* findErrorForCurrentThread */
+} /* pfindErrorForCurrentThread */
 
 
 /* this doesn't reset the error state. */
 static inline PHYSFS_ErrorCode currentErrorCode(void)
 {
-    const ErrState *err = findErrorForCurrentThread();
+    const ErrState *err = pfindErrorForCurrentThread();
     return err ? err->code : PHYSFS_ERR_OK;
 } /* currentErrorCode */
 
 
 PHYSFS_ErrorCode PHYSFS_getLastErrorCode(void)
 {
-    ErrState *err = findErrorForCurrentThread();
+    ErrState *err = pfindErrorForCurrentThread();
     const PHYSFS_ErrorCode retval = (err) ? err->code : PHYSFS_ERR_OK;
     if (err)
         err->code = PHYSFS_ERR_OK;
@@ -758,7 +758,7 @@ void PHYSFS_setErrorCode(PHYSFS_ErrorCode errcode)
     if (!errcode)
         return;
 
-    err = findErrorForCurrentThread();
+    err = pfindErrorForCurrentThread();
     if (err == NULL)
     {
         err = (ErrState *) allocator.Malloc(sizeof (ErrState));
@@ -1207,7 +1207,7 @@ static int doDeinit(void);
 
 int PHYSFS_init(const char *argv0)
 {
-    BAIL_IF(initialized, PHYSFS_ERR_IS_INITIALIZED, 0);
+    BAIL_IF(physfs_initialized, PHYSFS_ERR_IS_INITIALIZED, 0);
 
     if (!externalAllocator)
         setDefaultAllocator();
@@ -1238,7 +1238,7 @@ int PHYSFS_init(const char *argv0)
 
     if (!initStaticArchivers()) goto initFailed;
 
-    initialized = 1;
+    physfs_initialized = 1;
 
     /* This makes sure that the error subsystem is initialized. */
     PHYSFS_setErrorCode(PHYSFS_getLastErrorCode());
@@ -1395,7 +1395,7 @@ static int doDeinit(void)
 
     longest_root = 0;
     allowSymLinks = 0;
-    initialized = 0;
+    physfs_initialized = 0;
 
     if (errorLock) __PHYSFS_platformDestroyMutex(errorLock);
     if (stateLock) __PHYSFS_platformDestroyMutex(stateLock);
@@ -1413,14 +1413,14 @@ static int doDeinit(void)
 
 int PHYSFS_deinit(void)
 {
-    BAIL_IF(!initialized, PHYSFS_ERR_NOT_INITIALIZED, 0);
+    BAIL_IF(!physfs_initialized, PHYSFS_ERR_NOT_INITIALIZED, 0);
     return doDeinit();
 } /* PHYSFS_deinit */
 
 
 int PHYSFS_isInit(void)
 {
-    return initialized;
+    return physfs_initialized;
 } /* PHYSFS_isInit */
 
 
@@ -1530,7 +1530,7 @@ regfailed:
 int PHYSFS_registerArchiver(const PHYSFS_Archiver *archiver)
 {
     int retval;
-    BAIL_IF(!initialized, PHYSFS_ERR_NOT_INITIALIZED, 0);
+    BAIL_IF(!physfs_initialized, PHYSFS_ERR_NOT_INITIALIZED, 0);
     __PHYSFS_platformGrabMutex(stateLock);
     retval = doRegisterArchiver(archiver);
     __PHYSFS_platformReleaseMutex(stateLock);
@@ -1542,7 +1542,7 @@ int PHYSFS_deregisterArchiver(const char *ext)
 {
     size_t i;
 
-    BAIL_IF(!initialized, PHYSFS_ERR_NOT_INITIALIZED, 0);
+    BAIL_IF(!physfs_initialized, PHYSFS_ERR_NOT_INITIALIZED, 0);
     BAIL_IF(!ext, PHYSFS_ERR_INVALID_ARGUMENT, 0);
 
     __PHYSFS_platformGrabMutex(stateLock);
@@ -1563,7 +1563,7 @@ int PHYSFS_deregisterArchiver(const char *ext)
 
 const PHYSFS_ArchiveInfo **PHYSFS_supportedArchiveTypes(void)
 {
-    BAIL_IF(!initialized, PHYSFS_ERR_NOT_INITIALIZED, NULL);
+    BAIL_IF(!physfs_initialized, PHYSFS_ERR_NOT_INITIALIZED, NULL);
     return (const PHYSFS_ArchiveInfo **) archiveInfo;
 } /* PHYSFS_supportedArchiveTypes */
 
@@ -1607,7 +1607,7 @@ const char *PHYSFS_getPrefDir(const char *org, const char *app)
     char *ptr = NULL;
     char *endstr = NULL;
 
-    BAIL_IF(!initialized, PHYSFS_ERR_NOT_INITIALIZED, 0);
+    BAIL_IF(!physfs_initialized, PHYSFS_ERR_NOT_INITIALIZED, 0);
     BAIL_IF(!org, PHYSFS_ERR_INVALID_ARGUMENT, NULL);
     BAIL_IF(*org == '\0', PHYSFS_ERR_INVALID_ARGUMENT, NULL);
     BAIL_IF(!app, PHYSFS_ERR_INVALID_ARGUMENT, NULL);
@@ -1988,7 +1988,7 @@ int PHYSFS_setSaneConfig(const char *organization, const char *appName,
     const char *basedir;
     const char *prefdir;
 
-    BAIL_IF(!initialized, PHYSFS_ERR_NOT_INITIALIZED, 0);
+    BAIL_IF(!physfs_initialized, PHYSFS_ERR_NOT_INITIALIZED, 0);
 
     prefdir = PHYSFS_getPrefDir(organization, appName);
     BAIL_IF_ERRPASS(!prefdir, 0);
@@ -3177,7 +3177,7 @@ void __PHYSFS_smallFree(void *ptr)
 
 int PHYSFS_setAllocator(const PHYSFS_Allocator *a)
 {
-    BAIL_IF(initialized, PHYSFS_ERR_IS_INITIALIZED, 0);
+    BAIL_IF(physfs_initialized, PHYSFS_ERR_IS_INITIALIZED, 0);
     externalAllocator = (a != NULL);
     if (externalAllocator)
         memcpy(&allocator, a, sizeof (PHYSFS_Allocator));
@@ -3188,7 +3188,7 @@ int PHYSFS_setAllocator(const PHYSFS_Allocator *a)
 
 const PHYSFS_Allocator *PHYSFS_getAllocator(void)
 {
-    BAIL_IF(!initialized, PHYSFS_ERR_NOT_INITIALIZED, NULL);
+    BAIL_IF(!physfs_initialized, PHYSFS_ERR_NOT_INITIALIZED, NULL);
     return &allocator;
 } /* PHYSFS_getAllocator */
 

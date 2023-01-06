@@ -55,7 +55,6 @@
 #ifndef __WATCOMC__ /* #@!.!.. */
 #define pow SDL_pow
 #define floor SDL_floor
-#define ldexp(v, e) SDL_scalbn((v), (e))
 #define abs(x) SDL_abs(x)
 #define cos(x) SDL_cos(x)
 #define sin(x) SDL_sin(x)

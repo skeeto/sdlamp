@@ -7,7 +7,7 @@
 */
 
 #define __SDL_SOUND_INTERNAL__
-#include "SDL_sound_internal.h"
+#include "../SDL_sound_internal.h"
 
 #include "common.h"
 #include "tables.h"

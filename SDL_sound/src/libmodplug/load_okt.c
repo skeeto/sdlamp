@@ -10,7 +10,7 @@
 //////////////////////////////////////////////
 #include "libmodplug.h"
 
-#define MAGIC(a,b,c,d) (((a) << 24UL) | ((b) << 16UL) | ((c) << 8UL) | (d))
+#define OKTMAGIC(a,b,c,d) (((a) << 24UL) | ((b) << 16UL) | ((c) << 8UL) | (d))
 
 #pragma pack(1)
 typedef struct OKTFILEHEADER
@@ -52,13 +52,13 @@ BOOL CSoundFile_ReadOKT(CSoundFile *_this, const BYTE *lpStream, DWORD dwMemLeng
 	UINT i;
 
 	if ((!lpStream) || (dwMemLength < 1024)) return FALSE;
-	if ((bswapBE32(pfh->okta) != MAGIC('O','K','T','A'))
-	 || (bswapBE32(pfh->song) != MAGIC('S','O','N','G'))
-	 || (bswapBE32(pfh->cmod) != MAGIC('C','M','O','D'))
+	if ((bswapBE32(pfh->okta) != OKTMAGIC('O','K','T','A'))
+	 || (bswapBE32(pfh->song) != OKTMAGIC('S','O','N','G'))
+	 || (bswapBE32(pfh->cmod) != OKTMAGIC('C','M','O','D'))
 	 || (bswapBE32(pfh->cmodlen) != 8)
 	 || (pfh->chnsetup[0]) || (pfh->chnsetup[2])
 	 || (pfh->chnsetup[4]) || (pfh->chnsetup[6])
-	 || (bswapBE32(pfh->samp) != MAGIC('S','A','M','P'))) return FALSE;
+	 || (bswapBE32(pfh->samp) != OKTMAGIC('S','A','M','P'))) return FALSE;
 	_this->m_nType = MOD_TYPE_OKT;
 	_this->m_nChannels = 4 + pfh->chnsetup[1] + pfh->chnsetup[3] + pfh->chnsetup[5] + pfh->chnsetup[7];
 	if (_this->m_nChannels > MAX_CHANNELS) _this->m_nChannels = MAX_CHANNELS;
@@ -87,7 +87,7 @@ BOOL CSoundFile_ReadOKT(CSoundFile *_this, const BYTE *lpStream, DWORD dwMemLeng
 	}
 	// SPEE
 	if (dwMemPos >= dwMemLength - 12) return TRUE;
-	if (readBE32(lpStream + dwMemPos) == MAGIC('S','P','E','E'))
+	if (readBE32(lpStream + dwMemPos) == OKTMAGIC('S','P','E','E'))
 	{
 		_this->m_nDefaultSpeed = lpStream[dwMemPos+9];
 
@@ -97,7 +97,7 @@ BOOL CSoundFile_ReadOKT(CSoundFile *_this, const BYTE *lpStream, DWORD dwMemLeng
 	}
 	// SLEN
 	if (dwMemPos + 10 > dwMemLength) return TRUE;
-	if (readBE32(lpStream + dwMemPos) == MAGIC('S','L','E','N'))
+	if (readBE32(lpStream + dwMemPos) == OKTMAGIC('S','L','E','N'))
 	{
 	//	npatterns = lpStream[dwMemPos+9];
 
@@ -107,7 +107,7 @@ BOOL CSoundFile_ReadOKT(CSoundFile *_this, const BYTE *lpStream, DWORD dwMemLeng
 	}
 	// PLEN
 	if (dwMemPos + 10 > dwMemLength) return TRUE;
-	if (readBE32(lpStream + dwMemPos) == MAGIC('P','L','E','N'))
+	if (readBE32(lpStream + dwMemPos) == OKTMAGIC('P','L','E','N'))
 	{
 		norders = lpStream[dwMemPos+9];
 
@@ -117,7 +117,7 @@ BOOL CSoundFile_ReadOKT(CSoundFile *_this, const BYTE *lpStream, DWORD dwMemLeng
 	}
 	// PATT
 	if (dwMemPos + 8 > dwMemLength) return TRUE;
-	if (readBE32(lpStream + dwMemPos) == MAGIC('P','A','T','T'))
+	if (readBE32(lpStream + dwMemPos) == OKTMAGIC('P','A','T','T'))
 	{
 		UINT orderlen = norders;
 		if (orderlen >= MAX_ORDERS) orderlen = MAX_ORDERS-1;
@@ -130,7 +130,7 @@ BOOL CSoundFile_ReadOKT(CSoundFile *_this, const BYTE *lpStream, DWORD dwMemLeng
 		dwMemPos += dwSize + 8;
 	}
 	// PBOD
-	while ((dwMemPos < dwMemLength - 10) && (readBE32(lpStream + dwMemPos) == MAGIC('P','B','O','D')))
+	while ((dwMemPos < dwMemLength - 10) && (readBE32(lpStream + dwMemPos) == OKTMAGIC('P','B','O','D')))
 	{
 		DWORD dwPos = dwMemPos + 10;
 		UINT rows = lpStream[dwMemPos+9];
@@ -212,7 +212,7 @@ BOOL CSoundFile_ReadOKT(CSoundFile *_this, const BYTE *lpStream, DWORD dwMemLeng
 		dwMemPos += dwSize + 8;
 	}
 	// SBOD
-	while ((dwMemPos < dwMemLength-10) && (readBE32(lpStream + dwMemPos) == MAGIC('S','B','O','D')))
+	while ((dwMemPos < dwMemLength-10) && (readBE32(lpStream + dwMemPos) == OKTMAGIC('S','B','O','D')))
 	{
 		if (nsmp < MAX_SAMPLES) CSoundFile_ReadSample(_this, &_this->Ins[nsmp], RS_PCM8S, (LPSTR)(lpStream+dwMemPos+8), dwMemLength-dwMemPos-8);
 		nsmp++;

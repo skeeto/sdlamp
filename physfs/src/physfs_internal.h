@@ -165,14 +165,6 @@ void *__PHYSFS_initSmallAlloc(void *ptr, const size_t len);
 
 void __PHYSFS_smallFree(void *ptr);
 
-
-/* Use the allocation hooks. */
-#define malloc(x) Do not use malloc() directly.
-#define realloc(x, y) Do not use realloc() directly.
-#define free(x) Do not use free() directly.
-/* !!! FIXME: add alloca check here. */
-
-
 /* by default, enable things, so builds can opt out of a few things they
    want to avoid. But you can build with this #defined to 0 if you would
    like to turn off everything except a handful of things you opt into. */

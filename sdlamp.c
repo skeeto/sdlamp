@@ -1,9 +1,83 @@
-#include <stdio.h>
 #include "SDL.h"
-#include "SDL_sound.h"
-#include "physfs.h"
+#include "SDL_sound/src/SDL_sound.h"
+#include "physfs/src/physfs.h"
 #include "physfs/extras/physfsrwops.h"
 #include "physfs/extras/ignorecase.h"
+
+#define SNDFX_C
+#define SNDMIX_C
+
+#include "SDL_sound/src/SDL_sound.c"
+#include "SDL_sound/src/SDL_sound_aiff.c"
+#include "SDL_sound/src/SDL_sound_au.c"
+#include "SDL_sound/src/SDL_sound_coreaudio.c"
+#include "SDL_sound/src/SDL_sound_flac.c"
+#include "SDL_sound/src/SDL_sound_midi.c"
+#include "SDL_sound/src/SDL_sound_modplug.c"
+#include "SDL_sound/src/SDL_sound_mp3.c"
+#include "SDL_sound/src/SDL_sound_raw.c"
+#include "SDL_sound/src/SDL_sound_shn.c"
+#include "SDL_sound/src/SDL_sound_voc.c"
+#include "SDL_sound/src/SDL_sound_vorbis.c"
+#include "SDL_sound/src/SDL_sound_wav.c"
+#include "physfs/src/physfs.c"
+#include "physfs/src/physfs_archiver_7z.c"
+#include "physfs/src/physfs_archiver_dir.c"
+#include "physfs/src/physfs_archiver_grp.c"
+#include "physfs/src/physfs_archiver_hog.c"
+#include "physfs/src/physfs_archiver_iso9660.c"
+#include "physfs/src/physfs_archiver_mvl.c"
+#include "physfs/src/physfs_archiver_qpak.c"
+#include "physfs/src/physfs_archiver_slb.c"
+#include "physfs/src/physfs_archiver_unpacked.c"
+#include "physfs/src/physfs_archiver_vdf.c"
+#include "physfs/src/physfs_archiver_wad.c"
+#include "physfs/src/physfs_archiver_zip.c"
+#include "physfs/src/physfs_byteorder.c"
+#include "physfs/src/physfs_unicode.c"
+#include "physfs/extras/ignorecase.c"
+#include "physfs/extras/physfsrwops.c"
+
+#include "SDL_sound/src/timidity/common.c"
+#include "SDL_sound/src/timidity/instrum.c"
+#include "SDL_sound/src/timidity/mix.c"
+#include "SDL_sound/src/timidity/output.c"
+#include "SDL_sound/src/timidity/playmidi.c"
+#include "SDL_sound/src/timidity/readmidi.c"
+#include "SDL_sound/src/timidity/resample.c"
+#include "SDL_sound/src/timidity/tables.c"
+#include "SDL_sound/src/timidity/timidity.c"
+
+#include "SDL_sound/src/libmodplug/fastmix.c"
+#include "SDL_sound/src/libmodplug/load_669.c"
+#include "SDL_sound/src/libmodplug/load_amf.c"
+#include "SDL_sound/src/libmodplug/load_ams.c"
+#include "SDL_sound/src/libmodplug/load_dbm.c"
+#include "SDL_sound/src/libmodplug/load_dmf.c"
+#include "SDL_sound/src/libmodplug/load_dsm.c"
+#include "SDL_sound/src/libmodplug/load_far.c"
+#include "SDL_sound/src/libmodplug/load_gdm.c"
+#include "SDL_sound/src/libmodplug/load_it.c"
+#include "SDL_sound/src/libmodplug/load_mdl.c"
+#include "SDL_sound/src/libmodplug/load_med.c"
+#include "SDL_sound/src/libmodplug/load_mod.c"
+#include "SDL_sound/src/libmodplug/load_mt2.c"
+#include "SDL_sound/src/libmodplug/load_mtm.c"
+#include "SDL_sound/src/libmodplug/load_okt.c"
+#include "SDL_sound/src/libmodplug/load_psm.c"
+#include "SDL_sound/src/libmodplug/load_ptm.c"
+#include "SDL_sound/src/libmodplug/load_s3m.c"
+#include "SDL_sound/src/libmodplug/load_stm.c"
+#include "SDL_sound/src/libmodplug/load_ult.c"
+#include "SDL_sound/src/libmodplug/load_umx.c"
+#include "SDL_sound/src/libmodplug/load_xm.c"
+#include "SDL_sound/src/libmodplug/mmcmp.c"
+#include "SDL_sound/src/libmodplug/modplug.c"
+#include "SDL_sound/src/libmodplug/snd_dsp.c"
+#include "SDL_sound/src/libmodplug/snd_flt.c"
+#include "SDL_sound/src/libmodplug/snd_fx.c"
+#include "SDL_sound/src/libmodplug/sndfile.c"
+#include "SDL_sound/src/libmodplug/sndmix.c"
 
 typedef void (*ClickFn)(void);
 
@@ -74,7 +148,6 @@ static void panic_and_abort(const char *title, const char *text) __attribute__((
 
 static void panic_and_abort(const char *title, const char *text)
 {
-    fprintf(stderr, "PANIC: %s ... %s\n", title, text);
     SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, title, text, window);
     SDL_Quit();
     exit(1);

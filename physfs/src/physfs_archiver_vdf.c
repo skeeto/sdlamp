@@ -25,15 +25,6 @@ static const char* VDF_SIGNATURE_G1 = "PSVDSC_V2.00\r\n\r\n";
 static const char* VDF_SIGNATURE_G2 = "PSVDSC_V2.00\n\r\n\r";
 
 
-static inline int readui32(PHYSFS_Io *io, PHYSFS_uint32 *val)
-{
-    PHYSFS_uint32 v;
-    BAIL_IF_ERRPASS(!__PHYSFS_readAll(io, &v, sizeof (v)), 0);
-    *val = PHYSFS_swapULE32(v);
-    return 1;
-} /* readui32 */
-
-
 static PHYSFS_sint64 vdfDosTimeToEpoch(const PHYSFS_uint32 dostime)
 {
     /* VDF stores timestamps as 32bit DOS dates: the seconds are counted in

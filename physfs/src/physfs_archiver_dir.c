@@ -85,7 +85,7 @@ static PHYSFS_EnumerateCallbackResult DIR_enumerate(void *opaque,
 } /* DIR_enumerate */
 
 
-static PHYSFS_Io *doOpen(void *opaque, const char *name, const int mode)
+static PHYSFS_Io *doOpen2(void *opaque, const char *name, const int mode)
 {
     PHYSFS_Io *io = NULL;
     char *f = NULL;
@@ -105,24 +105,24 @@ static PHYSFS_Io *doOpen(void *opaque, const char *name, const int mode)
     __PHYSFS_smallFree(f);
 
     return io;
-} /* doOpen */
+} /* doOpen2 */
 
 
 static PHYSFS_Io *DIR_openRead(void *opaque, const char *filename)
 {
-    return doOpen(opaque, filename, 'r');
+    return doOpen2(opaque, filename, 'r');
 } /* DIR_openRead */
 
 
 static PHYSFS_Io *DIR_openWrite(void *opaque, const char *filename)
 {
-    return doOpen(opaque, filename, 'w');
+    return doOpen2(opaque, filename, 'w');
 } /* DIR_openWrite */
 
 
 static PHYSFS_Io *DIR_openAppend(void *opaque, const char *filename)
 {
-    return doOpen(opaque, filename, 'a');
+    return doOpen2(opaque, filename, 'a');
 } /* DIR_openAppend */
 
 

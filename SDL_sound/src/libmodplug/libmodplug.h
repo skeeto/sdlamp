@@ -10,7 +10,7 @@
 #define _INCL_LIBMODPLUG_H_
 
 #define __SDL_SOUND_INTERNAL__
-#include "SDL_sound_internal.h"
+#include "../SDL_sound_internal.h"
 
 #if defined(HAVE_LIBC) && defined(__WATCOMC__) /* Watcom has issues... */
 #define SDL_cos  cos

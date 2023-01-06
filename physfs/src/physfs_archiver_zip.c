@@ -276,18 +276,6 @@ static int readui64(PHYSFS_Io *io, PHYSFS_uint64 *val)
 } /* readui64 */
 
 /*
- * Read an unsigned 32-bit int and swap to native byte order.
- */
-static int readui32(PHYSFS_Io *io, PHYSFS_uint32 *val)
-{
-    PHYSFS_uint32 v;
-    BAIL_IF_ERRPASS(!__PHYSFS_readAll(io, &v, sizeof (v)), 0);
-    *val = PHYSFS_swapULE32(v);
-    return 1;
-} /* readui32 */
-
-
-/*
  * Read an unsigned 16-bit int and swap to native byte order.
  */
 static int readui16(PHYSFS_Io *io, PHYSFS_uint16 *val)
